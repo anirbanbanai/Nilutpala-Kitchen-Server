@@ -26,16 +26,50 @@ async function run() {
     // await client.connect();
 
     const niluCollection = client.db("NiluKitchen").collection("foodfact")
+    const LoveCollection = client.db("NiluKitchen").collection("fav")
+    const shopCollection = client.db("NiluKitchen").collection("shop")
 
-    app.get("/nilufood", async(req,res)=>{
-        const result =await niluCollection.find().toArray();
-        res.send(result)
+    app.get("/nilufood", async (req, res) => {
+      const result = await niluCollection.find().toArray();
+      res.send(result)
     })
 
-    app.post("/nilufood", async(req,res)=>{
-        const newItem = req.body;
-       const result = await niluCollection.insertOne(newItem);
+    app.post("/nilufood", async (req, res) => {
+      const newItem = req.body;
+      const result = await niluCollection.insertOne(newItem);
+      res.send(result)
+    })
+
+    app.delete("/niludelete", async (req, res) => {
+       const id = req.id;
+       const result = await niluCollection.deleteOne(id);
        res.send(result)
+    })
+
+    app.delete("/fvdel/:id", async (req, res) => {
+       const id = req.id;
+       const result = await LoveCollection.deleteOne(id);
+       res.send(result)
+    })
+
+    app.post("/fv", async(req, res)=>{
+      const newItem= req.body;
+      const result = await LoveCollection.insertOne(newItem);
+      res.send(result)
+    })
+    app.post("/addcart", async(req, res)=>{
+      const newItem= req.body;
+      const result = await shopCollection.insertOne(newItem);
+      res.send(result)
+    })
+
+    app.get("/fvr", async(req, res)=>{
+      const result = await LoveCollection.find().toArray();
+      res.send(result)
+    })
+    app.get("/addcart", async(req, res)=>{
+      const result = await shopCollection.find().toArray();
+      res.send(result)
     })
 
     await client.db("admin").command({ ping: 1 });
